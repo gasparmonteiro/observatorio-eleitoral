@@ -1,8 +1,9 @@
-OBSERVATÓRIO ELEITORAL MT — WEB V01
-Base: Eleições 2022, 1º turno, Mato Grosso.
-Somente online.
+OBSERVATÓRIO ELEITORAL WEB V02
 
-Fluxo: Eleição > Cargo > Candidato > Município > Bairro > Local de votação > Seção.
-Sem candidato selecionado, lista todos os candidatos do cargo em ordem decrescente de votos.
+Correções da V02:
+- BAIRRO e NOME DO LOCAL DE VOTAÇÃO recuperados da base corrigida de 2022.
+- Identidade visual inspirada nas cores da bandeira de Mato Grosso: azul, verde, amarelo e branco.
+- Botão “← Voltar aos municípios” destacado na consulta territorial.
 
-Arquivos de dados foram fragmentados em 1 bloco(s), todos abaixo de 25 MiB para facilitar o GitHub.
+Publicação: GitHub Pages, somente online.
+Substitua no repositório os arquivos da V01 pelos arquivos desta versão, preservando a pasta dados/2022.
