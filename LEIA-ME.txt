@@ -1,5 +1,0 @@
-OBSERVATÓRIO ELEITORAL WEB V01.5
-
-Base: V01.4, com estrutura, navegação e layout preservados.
-Incluída eleição 2010: 1º turno (Presidente, Governador, Senador, Deputado Federal e Deputado Estadual) e 2º turno (Presidente).
-Geografia histórica: eleitorado_local_votacao_2010.
