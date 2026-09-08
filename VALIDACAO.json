@@ -1,0 +1,55 @@
+{
+  "versao": "V01.3",
+  "eleicoes": [
+    2018,
+    2022
+  ],
+  "turno": 1,
+  "regra_historica": "Cada eleição usa seu próprio arquivo eleitorado_local_votacao do ano; nome, bairro e endereço não são reaproveitados entre eleições pelo código do local.",
+  "bases": {
+    "2018": [
+      "bweb_1t_MT_101020182002(2).xlsx",
+      "eleitorado_local_votacao_2018(1).xlsx"
+    ],
+    "2022": [
+      "bweb 1º turno MT 2022",
+      "eleitorado_local_votacao_2022(1).xlsx"
+    ]
+  },
+  "2018": {
+    "municipios": 141,
+    "secoes_mapeadas": 8022,
+    "candidatos": 501,
+    "cargos": 5,
+    "barranco": [
+      {
+        "nome": "VALDIR BARRANCO",
+        "numero": "13123",
+        "total": 21970
+      }
+    ]
+  },
+  "2022": {
+    "municipios": 141,
+    "secoes_mapeadas": 8453,
+    "candidatos": 468,
+    "cargos": 5,
+    "barranco": [
+      {
+        "nome": "VALDIR BARRANCO",
+        "numero": "13123",
+        "total": 29359
+      }
+    ]
+  },
+  "controle_local_1015_alta_floresta": {
+    "2018": {
+      "nome": "CENTRO EDUCACIONAL COSTRUINDO O SABER-ANTIGO CTAF",
+      "endereco": "AV. PERIMETRAL ROGÉRIO SILVA S/N"
+    },
+    "2022": {
+      "nome": "COLÉGIO ALTA FLORESTA",
+      "endereco": "AV. PERIMETRAL ROGÉRIO SILVA S/N"
+    }
+  }
+}
