@@ -1,9 +1,0 @@
-OBSERVATÓRIO ELEITORAL WEB V02
-
-Correções da V02:
-- BAIRRO e NOME DO LOCAL DE VOTAÇÃO recuperados da base corrigida de 2022.
-- Identidade visual inspirada nas cores da bandeira de Mato Grosso: azul, verde, amarelo e branco.
-- Botão “← Voltar aos municípios” destacado na consulta territorial.
-
-Publicação: GitHub Pages, somente online.
-Substitua no repositório os arquivos da V01 pelos arquivos desta versão, preservando a pasta dados/2022.
