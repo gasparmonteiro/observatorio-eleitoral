@@ -1,9 +1,5 @@
-OBSERVATÓRIO ELEITORAL WEB V01.4
+OBSERVATÓRIO ELEITORAL WEB V01.5
 
-Melhorias de navegação:
-- Tela inicial neutra, sem eleição/cargo/candidato previamente carregados.
-- HOME retorna à tela inicial e zera a consulta.
-- Após escolher Eleição + Cargo, exibe a lista de candidatos por votação.
-- Voltar aos candidatos a partir da lista de municípios.
-- Voltar aos municípios a partir do detalhamento territorial.
-- Mantidos 2018, 2022, endereços e toda a hierarquia territorial da V01.3.
+Base: V01.4, com estrutura, navegação e layout preservados.
+Incluída eleição 2010: 1º turno (Presidente, Governador, Senador, Deputado Federal e Deputado Estadual) e 2º turno (Presidente).
+Geografia histórica: eleitorado_local_votacao_2010.

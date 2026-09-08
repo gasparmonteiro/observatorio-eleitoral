@@ -27,7 +27,7 @@ async function loadYear(y){
   cargoSel.innerHTML='<option value="">Escolha o cargo</option>'+catalog.cargos.map(c=>`<option value="${c.codigo}">${c.nome}</option>`).join('');
   cargoSel.disabled=false;
   candSel.innerHTML='<option value="">Escolha primeiro o cargo</option>';
-  badge.textContent=`${ano} · 1º turno`; footer.textContent=`Observatório Eleitoral MT · Base ${ano}`;
+  const displayAno=catalog.ano||ano, displayTurno=catalog.turno||1; badge.textContent=`${displayAno} · ${displayTurno}º turno`; footer.textContent=`Observatório Eleitoral MT · Base ${displayAno}`;
 }
 function cargo(){return catalog?.cargos.find(c=>String(c.codigo)===String(cargoSel.value))}
 function showCandidateList(){
@@ -42,7 +42,7 @@ function renderCandidates(){
   const c=cargo(); if(!c)return;
   const q=busca.value.trim().toLocaleUpperCase('pt-BR');
   const arr=c.candidatos.filter(x=>!q||(`${x.nome} ${x.numero} ${x.partido}`).toLocaleUpperCase('pt-BR').includes(q));
-  conteudo.innerHTML=`<div class="list-title"><h2>Candidatos</h2><p>${ano} · ${c.nome}</p></div>
+  conteudo.innerHTML=`<div class="list-title"><h2>Candidatos</h2><p>${catalog?.ano||ano} · ${c.nome}</p></div>
   <div class="table-head"><div>#</div><div>Candidato</div><div style="text-align:right">Votos</div></div>`+
   arr.map((x,i)=>`<div class="row" data-cid="${x.id}"><div class="rank">${i+1}</div><div><div class="name">${x.nome}</div><div class="sub">${x.numero} · ${x.partido}</div></div><div class="votes">${fmt(x.total)}</div></div>`).join('');
   conteudo.querySelectorAll('[data-cid]').forEach(el=>el.onclick=()=>{candSel.value=el.dataset.cid;loadCandidate(el.dataset.cid)});
@@ -75,7 +75,7 @@ function renderMunicipio(mid){
     l.total+=v;l.secoes.push([zona,secao,v]);
   }
   window._bairroData=Object.entries(bairros).sort((a,b)=>b[1].total-a[1].total||a[0].localeCompare(b[0],'pt-BR'));
-  resumo.innerHTML=`<div class="kpi"><small>MUNICÍPIO</small><strong>${m[1]}</strong><div class="sub">Eleição ${ano}</div></div><div class="kpi"><small>VOTOS</small><strong>${fmt(m[2])}</strong><div class="sub">${currentCandidate.nome}</div></div><div class="kpi"><small>BAIRROS COM VOTOS</small><strong>${fmt(window._bairroData.length)}</strong></div>`;
+  resumo.innerHTML=`<div class="kpi"><small>MUNICÍPIO</small><strong>${m[1]}</strong><div class="sub">Eleição ${catalog?.ano||ano}</div></div><div class="kpi"><small>VOTOS</small><strong>${fmt(m[2])}</strong><div class="sub">${currentCandidate.nome}</div></div><div class="kpi"><small>BAIRROS COM VOTOS</small><strong>${fmt(window._bairroData.length)}</strong></div>`;
   renderBairros();
 }
 function renderBairros(){
