@@ -1,14 +1,15 @@
 const $=s=>document.querySelector(s),fmt=n=>Number(n||0).toLocaleString('pt-BR');
-let catalog=null,locais=null,currentCandidate=null,currentDetail=null,currentMunicipio=null,chunkCache={},ano='';
+let catalog=null,locais=null,currentCandidate=null,currentDetail=null,currentMunicipio=null,selectedMunicipio=null,chunkCache={},ano='';
 let municipioSort={key:null,dir:null},detailView='bairros',localSort={key:null,dir:null};
-const eleicaoSel=$('#eleicao'),cargoSel=$('#cargo'),candSel=$('#candidato'),busca=$('#busca'),
+const eleicaoSel=$('#eleicao'),municipioSel=$('#municipio'),municipioLabel=$('#municipioLabel'),cargoSel=$('#cargo'),candSel=$('#candidato'),busca=$('#busca'),
 conteudo=$('#conteudo'),resumo=$('#resumo'),voltar=$('#voltar'),home=$('#home'),
 badge=$('#badge'),footer=$('footer'),toolbar=$('#toolbar'),homeIntro=$('#homeIntro');
 
 function setHome(){
-  ano=''; catalog=null; locais=null; currentCandidate=null; currentDetail=null; currentMunicipio=null;
+  ano=''; catalog=null; locais=null; currentCandidate=null; currentDetail=null; currentMunicipio=null; selectedMunicipio=null;
   municipioSort={key:null,dir:null}; detailView='bairros'; localSort={key:null,dir:null};
   eleicaoSel.value='';
+  municipioSel.value=''; municipioSel.disabled=true; municipioLabel.classList.add('hidden'); municipioSel.innerHTML='<option value="">Escolha primeiro a eleição</option>';
   cargoSel.innerHTML='<option value="">Escolha primeiro a eleição</option>'; cargoSel.disabled=true;
   candSel.innerHTML='<option value="">Escolha primeiro o cargo</option>'; candSel.disabled=true;
   busca.value=''; toolbar.classList.add('hidden'); voltar.classList.add('hidden');
@@ -17,7 +18,7 @@ function setHome(){
   footer.textContent='Observatório Eleitoral MT · Bases históricas do TSE';
 }
 async function loadYear(y){
-  ano=String(y); currentCandidate=null; currentDetail=null; currentMunicipio=null;
+  ano=String(y); currentCandidate=null; currentDetail=null; currentMunicipio=null; selectedMunicipio=null;
   municipioSort={key:null,dir:null}; detailView='bairros'; localSort={key:null,dir:null};
   busca.value=''; resumo.innerHTML=''; conteudo.classList.add('hidden'); toolbar.classList.add('hidden');
   voltar.classList.add('hidden'); homeIntro.classList.add('hidden');
@@ -27,12 +28,19 @@ async function loadYear(y){
     fetch(`dados/${ano}/catalogo.json`).then(r=>{if(!r.ok)throw new Error('Catálogo não encontrado');return r.json()}),
     fetch(`dados/${ano}/locais.json`).then(r=>{if(!r.ok)throw new Error('Locais não encontrados');return r.json()})
   ]);
-  cargoSel.innerHTML='<option value="">Escolha o cargo</option>'+catalog.cargos.map(c=>`<option value="${c.codigo}">${c.nome}</option>`).join('');
-  cargoSel.disabled=false;
+  if(catalog.tipo==='municipal'){
+    municipioLabel.classList.remove('hidden'); municipioSel.disabled=false;
+    municipioSel.innerHTML='<option value="">Escolha o município</option>'+catalog.municipios.map(m=>`<option value="${m.codigo}">${m.nome}</option>`).join('');
+    cargoSel.innerHTML='<option value="">Escolha primeiro o município</option>'; cargoSel.disabled=true;
+  }else{
+    municipioLabel.classList.add('hidden'); municipioSel.disabled=true;
+    cargoSel.innerHTML='<option value="">Escolha o cargo</option>'+catalog.cargos.map(c=>`<option value="${c.codigo}">${c.nome}</option>`).join(''); cargoSel.disabled=false;
+  }
   candSel.innerHTML='<option value="">Escolha primeiro o cargo</option>';
   const displayAno=catalog.ano||ano, displayTurno=catalog.turno||1; badge.textContent=`${displayAno} · ${displayTurno}º turno`; footer.textContent=`Observatório Eleitoral MT · Base ${displayAno}`;
 }
-function cargo(){return catalog?.cargos.find(c=>String(c.codigo)===String(cargoSel.value))}
+function municipioCatalog(){return catalog?.municipios?.find(m=>String(m.codigo)===String(selectedMunicipio))}
+function cargo(){const cs=catalog?.tipo==='municipal'?municipioCatalog()?.cargos:catalog?.cargos;return cs?.find(c=>String(c.codigo)===String(cargoSel.value))}
 function showCandidateList(){
   const c=cargo(); if(!c)return;
   candSel.disabled=false;
@@ -45,7 +53,7 @@ function renderCandidates(){
   const c=cargo(); if(!c)return;
   const q=busca.value.trim().toLocaleUpperCase('pt-BR');
   const arr=c.candidatos.filter(x=>!q||(`${x.nome} ${x.numero} ${x.partido}`).toLocaleUpperCase('pt-BR').includes(q));
-  conteudo.innerHTML=`<div class="list-title"><h2>Candidatos</h2><p>${catalog?.ano||ano} · ${c.nome}</p></div>
+  conteudo.innerHTML=`<div class="list-title"><h2>Candidatos</h2><p>${catalog?.ano||ano}${catalog?.tipo==='municipal'?' · '+(municipioCatalog()?.nome||''):''} · ${c.nome}</p></div>
   <div class="table-head"><div>#</div><div>Candidato</div><div style="text-align:right">Votos</div></div>`+
   arr.map((x,i)=>`<div class="row" data-cid="${x.id}"><div class="rank">${i+1}</div><div><div class="name">${x.nome}</div><div class="sub">${x.numero} · ${x.partido}</div></div><div class="votes">${fmt(x.total)}</div></div>`).join('');
   conteudo.querySelectorAll('[data-cid]').forEach(el=>el.onclick=()=>{candSel.value=el.dataset.cid;loadCandidate(el.dataset.cid)});
@@ -56,7 +64,7 @@ async function loadCandidate(cid){
   voltar.classList.remove('hidden'); voltar.textContent='← Voltar aos candidatos';
   const key=`${ano}/${meta.arquivo}`; let d=chunkCache[key];
   if(!d){conteudo.innerHTML='<div class="loading">Carregando votação…</div>';d=await fetch(`dados/${ano}/${meta.arquivo}`).then(r=>r.json());chunkCache[key]=d}
-  currentDetail=d[cid]; renderMunicipios();
+  currentDetail=d[cid]; if(catalog?.tipo==='municipal')renderMunicipio(selectedMunicipio);else renderMunicipios();
 }
 function sortIndicator(key,state){return state.key===key?(state.dir==='asc'?' ▲':' ▼'):''}
 function toggleSort(state,key,defaultDir='asc'){
@@ -85,7 +93,7 @@ function renderMunicipios(){
 }
 function renderMunicipio(mid){
   const loc=locais[String(mid)],m=currentDetail.m.find(x=>String(x[0])===String(mid)); if(!loc||!m)return;
-  currentMunicipio=mid; voltar.classList.remove('hidden'); voltar.textContent='← Voltar aos municípios';
+  currentMunicipio=mid; voltar.classList.remove('hidden'); voltar.textContent=catalog?.tipo==='municipal'?'← Voltar aos candidatos':'← Voltar aos municípios';
   busca.value=''; busca.placeholder='Filtrar bairro, local ou endereço...';
   const voteMap=new Map(currentDetail.s.filter(x=>String(x[0])===String(mid)).map(x=>[`${x[1]}|${x[2]}`,x[3]])),bairros={};
   for(const s of loc.secoes){
@@ -137,9 +145,10 @@ function renderLocais(){
   conteudo.querySelectorAll('[data-localrow]').forEach(x=>x.onclick=()=>document.getElementById('localrow'+x.dataset.localrow).classList.toggle('hidden'));
 }
 eleicaoSel.onchange=async()=>{if(!eleicaoSel.value){setHome();return}try{await loadYear(eleicaoSel.value)}catch(e){conteudo.classList.remove('hidden');conteudo.innerHTML='<div class="empty">Não foi possível carregar os dados desta eleição.</div>';console.error(e)}};
+municipioSel.onchange=()=>{selectedMunicipio=municipioSel.value;currentCandidate=null;currentDetail=null;currentMunicipio=null;busca.value='';resumo.innerHTML='';toolbar.classList.add('hidden');conteudo.classList.add('hidden');candSel.disabled=true;candSel.innerHTML='<option value="">Escolha primeiro o cargo</option>';if(selectedMunicipio){const m=municipioCatalog();cargoSel.innerHTML='<option value="">Escolha o cargo</option>'+m.cargos.map(c=>`<option value="${c.codigo}">${c.nome}</option>`).join('');cargoSel.disabled=false}else{cargoSel.innerHTML='<option value="">Escolha primeiro o município</option>';cargoSel.disabled=true}};
 cargoSel.onchange=()=>{busca.value='';resumo.innerHTML='';if(cargoSel.value)showCandidateList();else{candSel.disabled=true;candSel.innerHTML='<option value="">Escolha primeiro o cargo</option>';toolbar.classList.add('hidden');conteudo.classList.add('hidden')}};
 candSel.onchange=()=>{busca.value='';if(candSel.value)loadCandidate(candSel.value);else showCandidateList()};
-busca.oninput=()=>currentMunicipio?renderTerritorial():currentCandidate?renderMunicipios():renderCandidates();
-voltar.onclick=()=>{busca.value='';if(currentMunicipio){currentMunicipio=null;busca.placeholder='Buscar município...';renderMunicipios()}else if(currentCandidate){currentCandidate=null;currentDetail=null;candSel.value='';resumo.innerHTML='';busca.placeholder='Buscar candidato...';renderCandidates();voltar.classList.add('hidden')}};
+busca.oninput=()=>currentMunicipio?renderTerritorial():currentCandidate?(catalog?.tipo==='municipal'?renderTerritorial():renderMunicipios()):renderCandidates();
+voltar.onclick=()=>{busca.value='';if(currentMunicipio){if(catalog?.tipo==='municipal'){currentMunicipio=null;currentCandidate=null;currentDetail=null;candSel.value='';resumo.innerHTML='';busca.placeholder='Buscar candidato...';renderCandidates();voltar.classList.add('hidden')}else{currentMunicipio=null;busca.placeholder='Buscar município...';renderMunicipios()}}else if(currentCandidate){currentCandidate=null;currentDetail=null;candSel.value='';resumo.innerHTML='';busca.placeholder='Buscar candidato...';renderCandidates();voltar.classList.add('hidden')}};
 home.onclick=setHome;
 setHome();
