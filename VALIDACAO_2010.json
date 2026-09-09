@@ -1,0 +1,39 @@
+{
+  "versao": "V01.5",
+  "base_layout": "V01.4 preservado",
+  "eleicoes": [
+    2010,
+    2018,
+    2022
+  ],
+  "2010": {
+    "territorio": {
+      "municipios": 141,
+      "secoes": 6436,
+      "locais_votacao": 1528
+    },
+    "primeiro_turno": {
+      "turno": 1,
+      "cargos": {
+        "Presidente": 9,
+        "Governador": 4,
+        "Senador": 7,
+        "Deputado Federal": 80,
+        "Deputado Estadual": 253
+      },
+      "candidatos": 353,
+      "unmatched_sections": 0,
+      "vote_section_keys": 6436
+    },
+    "segundo_turno": {
+      "turno": 2,
+      "cargos": {
+        "Presidente": 2
+      },
+      "candidatos": 2,
+      "unmatched_sections": 0,
+      "vote_section_keys": 6436
+    }
+  },
+  "regra_historica": "2010 usa exclusivamente eleitorado_local_votacao_2010; a mesma geografia é compartilhada entre 1º e 2º turnos da eleição de 2010."
+}

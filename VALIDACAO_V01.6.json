@@ -1,0 +1,24 @@
+{
+  "versao": "V01.6",
+  "base": "V01.5",
+  "layout": "preservado",
+  "estrutura_de_dados": "preservada",
+  "melhorias": {
+    "ordenacao_municipios": {
+      "municipio": ["A-Z", "Z-A"],
+      "votos": ["maior-menor", "menor-maior"],
+      "ordem_inicial": "maior-menor"
+    },
+    "detalhamento_territorial": {
+      "abas": ["Bairros", "Locais de votação"],
+      "bairros": "mantém a visualização consolidada existente",
+      "locais": "bairro + local de votação + votos, com endereço e seções expansíveis"
+    }
+  },
+  "validacoes_tecnicas": {
+    "javascript_sintaxe": "ok",
+    "arquivos_dados_comparados_com_v01_5": 12,
+    "arquivos_dados_alterados": 0,
+    "bytes_dados_preservados": 40013930
+  }
+}
